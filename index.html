@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Europe Edition - Flaggen Quiz</title>
+<style>
+  body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f0f0f0; }
+  h1 { color: #333; }
+  button { margin: 5px; padding: 10px 20px; font-size: 1.2em; cursor: pointer; }
+  #quiz { margin-top: 20px; }
+  #feedback { margin-top: 20px; font-weight: bold; font-size: 1.2em; }
+  #counter { margin-top: 20px; font-size: 1.1em; }
+</style>
+</head>
+<body>
+<h1>Europe Edition - Flaggen Quiz</h1>
+<div id="quiz"></div>
+<div id="feedback"></div>
+<div id="counter">Richtig: 0 | Falsch: 0</div>
+
+<script>
+// Alle europäischen Länder mit Emoji-Flaggen (Beispiel, du kannst mehr hinzufügen)
+const quizzes = [
+  { question: "Welche Flagge gehört zu Deutschland?", options: ["🇫🇷","🇩🇪","🇮🇹","🇪🇸"], answer: "🇩🇪" },
+  { question: "Welche Flagge gehört zu Frankreich?", options: ["🇫🇷","🇩🇪","🇵🇹","🇳🇱"], answer: "🇫🇷" },
+  { question: "Welche Flagge gehört zu Italien?", options: ["🇮🇹","🇬🇷","🇨🇭","🇳🇴"], answer: "🇮🇹" },
+  { question: "Welche Flagge gehört zu Spanien?", options: ["🇮🇸","🇪🇸","🇫🇮","🇧🇪"], answer: "🇪🇸" },
+  { question: "Welche Flagge gehört zu Österreich?", options: ["🇦🇹","🇨🇿","🇩🇰","🇸🇪"], answer: "🇦🇹" },
+  { question: "Welche Flagge gehört zu Belgien?", options: ["🇧🇪","🇧🇬","🇨🇾","🇱🇻"], answer: "🇧🇪" },
+  { question: "Welche Flagge gehört zu Bulgarien?", options: ["🇧🇬","🇭🇺","🇲🇹","🇱🇹"], answer: "🇧🇬" },
+  { question: "Welche Flagge gehört zu Kroatien?", options: ["🇭🇷","🇸🇰","🇩🇪","🇮🇪"], answer: "🇭🇷" },
+  { question: "Welche Flagge gehört zu Dänemark?", options: ["🇩🇰","🇳🇴","🇫🇮","🇸🇪"], answer: "🇩🇰" },
+  { question: "Welche Flagge gehört zu Finnland?", options: ["🇫🇮","🇪🇪","🇬🇷","🇨🇾"], answer: "🇫🇮" },
+  { question: "Welche Flagge gehört zu Griechenland?", options: ["🇬🇷","🇮🇹","🇲🇹","🇱🇹"], answer: "🇬🇷" },
+  { question: "Welche Flagge gehört zu Ungarn?", options: ["🇭🇺","🇵🇱","🇨🇿","🇸🇰"], answer: "🇭🇺" },
+  { question: "Welche Flagge gehört zu Irland?", options: ["🇮🇪","🇬🇧","🇵🇹","🇳🇱"], answer: "🇮🇪" },
+  { question: "Welche Flagge gehört zu Island?", options: ["🇮🇸","🇫🇮","🇳🇴","🇩🇰"], answer: "🇮🇸" },
+  { question: "Welche Flagge gehört zu Lettland?", options: ["🇱🇻","🇱🇹","🇪🇪","🇵🇱"], answer: "🇱🇻" },
+  { question: "Welche Flagge gehört zu Litauen?", options: ["🇱🇹","🇱🇻","🇪🇪","🇨🇿"], answer: "🇱🇹" },
+  { question: "Welche Flagge gehört zu Malta?", options: ["🇲🇹","🇮🇹","🇪🇸","🇵🇹"], answer: "🇲🇹" },
+  { question: "Welche Flagge gehört zu Niederlande?", options: ["🇳🇱","🇧🇪","🇩🇪","🇫🇷"], answer: "🇳🇱" },
+  { question: "Welche Flagge gehört zu Norwegen?", options: ["🇳🇴","🇩🇰","🇸🇪","🇫🇮"], answer: "🇳🇴" },
+  { question: "Welche Flagge gehört zu Polen?", options: ["🇵🇱","🇨🇿","🇸🇰","🇭🇺"], answer: "🇵🇱" },
+  { question: "Welche Flagge gehört zu Portugal?", options: ["🇵🇹","🇪🇸","🇫🇷","🇮🇹"], answer: "🇵🇹" },
+  { question: "Welche Flagge gehört zu Rumänien?", options: ["🇷🇴","🇧🇬","🇭🇺","🇨🇿"], answer: "🇷🇴" },
+  { question: "Welche Flagge gehört zu Schweden?", options: ["🇸🇪","🇩🇰","🇳🇴","🇫🇮"], answer: "🇸🇪" },
+  { question: "Welche Flagge gehört zu Schweiz?", options: ["🇨🇭","🇦🇹","🇩🇪","🇮🇹"], answer: "🇨🇭" },
+  { question: "Welche Flagge gehört zu Slowakei?", options: ["🇸🇰","🇨🇿","🇵🇱","🇭🇺"], answer: "🇸🇰" },
+  { question: "Welche Flagge gehört zu Slowenien?", options: ["🇸🇮","🇭🇷","🇷🇸","🇧🇬"], answer: "🇸🇮" },
+  { question: "Welche Flagge gehört zu Tschechien?", options: ["🇨🇿","🇸🇰","🇵🇱","🇩🇪"], answer: "🇨🇿" },
+  { question: "Welche Flagge gehört zu Vereinigtes Königreich?", options: ["🇬🇧","🇮🇪","🇫🇷","🇳🇱"], answer: "🇬🇧" },
+  { question: "Welche Flagge gehört zu Estland?", options: ["🇪🇪","🇱🇻","🇱🇹","🇫🇮"], answer: "🇪🇪" },
+  { question: "Welche Flagge gehört zu Albanien?", options: ["🇦🇱","🇦🇹","🇧🇬","🇨🇿"], answer: "🇦🇱" },
+{ question: "Welche Flagge gehört zu Andorra?", options: ["🇦🇩","🇦🇹","🇨🇭","🇱🇺"], answer: "🇦🇩" },
+{ question: "Welche Flagge gehört zu Belarus?", options: ["🇧🇾","🇷🇺","🇵🇱","🇱🇹"], answer: "🇧🇾" },
+{ question: "Welche Flagge gehört zu Bosnien und Herzegowina?", options: ["🇧🇦","🇭🇷","🇷🇸","🇲🇪"], answer: "🇧🇦" },
+{ question: "Welche Flagge gehört zu Liechtenstein?", options: ["🇱🇮","🇨🇭","🇦🇹","🇩🇪"], answer: "🇱🇮" },
+{ question: "Welche Flagge gehört zu Luxemburg?", options: ["🇱🇺","🇳🇱","🇧🇪","🇫🇷"], answer: "🇱🇺" },
+{ question: "Welche Flagge gehört zu Nordmazedonien?", options: ["🇲🇰","🇬🇷","🇷🇸","🇧🇬"], answer: "🇲🇰" },
+{ question: "Welche Flagge gehört zu Moldawien?", options: ["🇲🇩","🇷🇴","🇺🇦","🇧🇾"], answer: "🇲🇩" },
+{ question: "Welche Flagge gehört zu Montenegro?", options: ["🇲🇪","🇭🇷","🇷🇸","🇧🇦"], answer: "🇲🇪" },
+{ question: "Welche Flagge gehört zu Russland?", options: ["🇷🇺","🇧🇾","🇺🇦","🇱🇻"], answer: "🇷🇺" },
+{ question: "Welche Flagge gehört zu Serbien?", options: ["🇷🇸","🇭🇷","🇧🇬","🇲🇪"], answer: "🇷🇸" },
+{ question: "Welche Flagge gehört zu Ukraine?", options: ["🇺🇦","🇵🇱","🇷🇺","🇧🇾"], answer: "🇺🇦" },
+{ question: "Welche Flagge gehört zu Kosovo?", options: ["🇽🇰","🇷🇸","🇦🇱","🇲🇰"], answer: "🇽🇰" }
+];
+
+let correctCount = 0;
+let wrongCount = 0;
+
+function updateCounter() {
+  document.getElementById('counter').textContent = `Richtig: ${correctCount} | Falsch: ${wrongCount}`;
+}
+
+function showQuiz() {
+  const quiz = quizzes[Math.floor(Math.random() * quizzes.length)];
+  const quizDiv = document.getElementById('quiz');
+  quizDiv.innerHTML = `<p>${quiz.question}</p>` +
+    quiz.options.map(opt => `<button onclick="checkAnswer('${opt}','${quiz.answer}')">${opt}</button>`).join('');
+}
+
+function checkAnswer(selected, correct) {
+  const feedback = document.getElementById('feedback');
+  if (selected === correct) {
+    feedback.textContent = "✅ Richtig!";
+    correctCount++;
+  } else {
+    feedback.textContent = `❌ Falsch! Die richtige Antwort ist ${correct}`;
+    wrongCount++;
+  }
+  updateCounter();
+  setTimeout(() => {
+    feedback.textContent = "";
+    showQuiz();
+  }, 2000);
+}
+
+// Start des Quiz
+updateCounter();
+showQuiz();
+</script>
+</body>
+</html>
