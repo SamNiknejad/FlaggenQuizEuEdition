@@ -22,7 +22,7 @@ h1 {
 }
 
 #quiz button {
-  display: inline-block;   /* Buttons nebeneinander */
+  display: inline-block;
   margin: 5px;
   padding: 18px 25px;
   font-size: 1.6em;
@@ -55,7 +55,6 @@ h1 {
     font-size: 1.6em;
   }
 }
-
 </style>
 </head>
 <body>
@@ -65,7 +64,7 @@ h1 {
 <div id="counter">Richtig: 0 | Falsch: 0</div>
 
 <script>
-// Alle europäischen Länder mit Emoji-Flaggen (Beispiel, du kannst mehr hinzufügen)
+// Beispiel-Quiz, du kannst hier alle deine Fragen einfügen
 const quizzes = [
   { question: "Welche Flagge gehört zu Deutschland?", options: ["🇫🇷","🇩🇪","🇮🇹","🇪🇸"], answer: "🇩🇪" },
   { question: "Welche Flagge gehört zu Frankreich?", options: ["🇫🇷","🇩🇪","🇵🇹","🇳🇱"], answer: "🇫🇷" },
@@ -114,6 +113,15 @@ const quizzes = [
 let correctCount = 0;
 let wrongCount = 0;
 
+// Funktion zum Mischen der Antwortoptionen
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 function updateCounter() {
   document.getElementById('counter').textContent = `Richtig: ${correctCount} | Falsch: ${wrongCount}`;
 }
@@ -121,8 +129,13 @@ function updateCounter() {
 function showQuiz() {
   const quiz = quizzes[Math.floor(Math.random() * quizzes.length)];
   const quizDiv = document.getElementById('quiz');
+
+  // Optionen mischen
+  const options = shuffleArray([...quiz.options]);
+
+  // Frage und Buttons anzeigen
   quizDiv.innerHTML = `<p>${quiz.question}</p>` +
-    quiz.options.map(opt => `<button onclick="checkAnswer('${opt}','${quiz.answer}')">${opt}</button>`).join('');
+    options.map(opt => `<button onclick="checkAnswer('${opt}','${quiz.answer}')">${opt}</button>`).join('');
 }
 
 function checkAnswer(selected, correct) {
@@ -141,7 +154,7 @@ function checkAnswer(selected, correct) {
   }, 2000);
 }
 
-// Start des Quiz
+// Quiz starten
 updateCounter();
 showQuiz();
 </script>
